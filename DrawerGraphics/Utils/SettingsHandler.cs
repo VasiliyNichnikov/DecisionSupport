@@ -11,19 +11,14 @@ namespace DrawerGraphics.Utils
         public static List<LineItem> CreateCurveWithStyle(this GraphPane pane, ChartSettings settings,
             List<PointData> points)
         {
+            pane.CurveList.Clear();
             GeneratorColors.GenerateColors(DataPAM.NumberClusters);
             
             var curveColor = Color.Black;
-            var symbolType = SymbolType.Default;
 
             if (settings.Title != null)
             {
                 pane.Title.Text = settings.Title;
-            }
-
-            if (settings.SymbolType != null)
-            {
-                symbolType = settings.SymbolType.Value;
             }
 
             if (settings.CurveColor != null)
@@ -35,6 +30,7 @@ namespace DrawerGraphics.Utils
             foreach (var point in points)
             {
                 var label = point.Type == PointType.Default ? "Point" : "CenterPoint"; 
+                var symbolType = point.Type == PointType.Default ? SymbolType.Circle : SymbolType.Diamond; 
                 
                 var curve = pane.AddCurve(
                     label,

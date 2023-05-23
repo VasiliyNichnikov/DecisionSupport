@@ -27,13 +27,13 @@ namespace DecisionSupport.PAM
 
         private readonly List<Vector2> _set = new List<Vector2>()
         {
-            new Vector2(38, 40),
+            new Vector2(38, -40),
             new Vector2(24, 36),
-            new Vector2(25, 47),
+            new Vector2(-25, 47),
             new Vector2(38, 43),
             new Vector2(34, 4),
             new Vector2(24, 40),
-            new Vector2(31, 25),
+            new Vector2(31, -25),
             new Vector2(39, 17),
             new Vector2(28, 3),
             new Vector2(35, 35),
@@ -41,22 +41,24 @@ namespace DecisionSupport.PAM
             new Vector2(30, 43),
             new Vector2(37, 24),
             new Vector2(13, 17),
-            new Vector2(24, 2),
+            new Vector2(-24, 2),
             new Vector2(13, 22),
             new Vector2(11, 44),
             new Vector2(29, 31),
             new Vector2(26, 34),
-            new Vector2(39, 15),
-            new Vector2(45, 10)
+            new Vector2(39, -15),
+            new Vector2(-45, 10)
         };
 
         public IEnumerable<ReadOnlyCollection<Cluster>> GetClusters()
         {
             Build();
             CalculateClusters();
-            yield return _clusters.AsReadOnly();
+            // yield return _clusters.AsReadOnly();
+            
             Swap();
-
+            CalculateClusters();
+            yield return _clusters.AsReadOnly();
         }
 
         private void Build()
@@ -120,7 +122,7 @@ namespace DecisionSupport.PAM
                 }
             }
 
-            return result.Abs();
+            return result;
         }
         
         /// <summary>
@@ -144,11 +146,11 @@ namespace DecisionSupport.PAM
                     }
 
                     var vector2 = _set[j];
-                    var nearestMedoid = GetNearestMedoid(vector1);
+                    var nearestMedoid = GetNearestMedoid(vector2);
                     var distanceBetweeenV1andV2 = Vector2.EuclideanDistance(vector1, vector2);
 
                     var minimumVector =
-                        GetMinimumVectorUsingDistance(nearestMedoid, (vector1, distanceBetweeenV1andV2));
+                        GetMinimumVectorUsingDistance(nearestMedoid, (vector2, distanceBetweeenV1andV2));
                     sumDistance += minimumVector.distance;
 
                     // if (minimumVector.distance < minDistance)
@@ -163,14 +165,14 @@ namespace DecisionSupport.PAM
                     result = vector1;
                 }
             }
-            return result.Abs();
+            return result;
         }
 
         private (Vector2 vector, float distance) GetMinimumVectorUsingDistance((Vector2 vector, float distance) a,
             (Vector2 vector, float distance) b)
         {
             var minDistance = Math.Min(a.distance, b.distance);
-            return Math.Abs(minDistance - a.distance) < 0.001f ? a : b;
+            return Math.Abs(minDistance - a.distance) < 0.01f ? a : b;
         }
 
         /// <summary>
@@ -236,8 +238,8 @@ namespace DecisionSupport.PAM
                     if (tIH < tMin)
                     {
                         tMin = tIH;
-                        cMin = ci.Abs();
-                        xMin = xh.Abs();
+                        cMin = ci;
+                        xMin = xh;
                     }
                 }
             }

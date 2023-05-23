@@ -16,7 +16,7 @@ namespace DrawerGraphics.Charts
         public int YMax => 100;
         public int CountPoints => DataPAM.NumberElements;
 
-        private List<PointData> _points;
+        private readonly List<PointData> _points = new List<PointData>();
         private readonly DecisionSupport.PAM.Algorithm _algorithm;
         
         public AlgorithmPAM()
@@ -26,7 +26,7 @@ namespace DrawerGraphics.Charts
 
         public void UpdatePoints()
         {
-            _points = new List<PointData>();
+            _points.Clear();
 
             var clusters = _algorithm.GetClusters().FirstOrDefault();
 
